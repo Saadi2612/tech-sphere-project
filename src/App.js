@@ -8,7 +8,7 @@ import AdminHome from "./admin/AdminHome";
 function App() {
   return (
     <div>
-      
+      <Text>Anas</Text>
     </div>
   );
 }
