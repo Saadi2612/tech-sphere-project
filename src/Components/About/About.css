@@ -1,0 +1,41 @@
+.maindiv{
+background-color:white;
+height:auto
+
+
+
+}
+
+
+.image{
+height:1000px;
+width:100%;
+padding: 5%;
+
+
+
+}
+
+.paragraph{
+
+    padding: 5%;
+
+    height: 400;
+    
+
+
+}
+
+@media (max-width:768px) {
+
+
+    
+
+    .paragraph{
+        
+
+     width:100%
+
+    }
+    
+}

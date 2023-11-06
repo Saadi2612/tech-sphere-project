@@ -1,0 +1,45 @@
+.beautify{    
+
+ 
+    
+    padding: 3%;
+    margin-top: 2%;
+    margin-bottom: 0%;
+    margin-left: 10%;
+    margin-right: 10%;
+  border-bottom: 1px solid rgb(203, 181, 184);
+}
+
+
+
+
+.beautify text{
+
+    font-family:Arial, Helvetica, sans-serif;
+text-align: left;
+justify-content: left;
+font-size: 13px;
+text-align: left;
+
+
+}
+
+
+.txts{
+
+    font-family:Arial, Helvetica, sans-serif;
+    text-align: left;
+    justify-content: left;
+    font-size: 13px;
+    text-align: right;
+
+
+}
+
+.beautify span{
+    font-family:Arial, Helvetica, sans-serif;
+ text-align: right;
+ justify-content: right;
+
+}
+
