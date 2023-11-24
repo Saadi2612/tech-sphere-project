@@ -6,6 +6,7 @@ import heroImage from "../Assets/homeBannerImg.png";
 import { useAuth } from "./ContextAuth/Auth";
 import Header from "./Header";
 import axios from "axios";
+import StripeCheckout from "react-stripe-checkout";
 function CheckoutPage() {
   const [auth] = useAuth();
 
@@ -19,6 +20,7 @@ function CheckoutPage() {
     City: "",
     State: "",
     Zipcode: "",
+    ParcelStatus: "Pending",
   });
 
   const handleSubmit = async (e) => {
@@ -35,6 +37,7 @@ function CheckoutPage() {
         City: values.City,
         State: values.State,
         Zipcode: values.Zipcode,
+        ParcelStatus: "Pending",
         items: cartItems,
         customerdata: userId,
       });
@@ -42,6 +45,7 @@ function CheckoutPage() {
       console.log(err);
     }
   };
+
   return (
     <div>
       <Header />
@@ -133,12 +137,15 @@ function CheckoutPage() {
                   }
                 />
               </div>
+              <div>
+                <StripeCheckout stripeKey="pk_test_51NFABoBUBBvJWKKpR9lk1alYC5cuTBBlgCh9zhc0qF0uJPUYieJpaBWqpiP74320RgzGTquSy4HiSJUHFSFCqlyn00NHWBI7Ri" />
+              </div>
 
               <button
-                class="w-full px-12 py-2 flex justify-center rounded-lg text-gray-50 font-normal tracking-wide bg-[#6441a5]  hover:scale-105 ease-in duration-200"
                 type="submit"
+                class="w-full px-12 py-2 flex justify-center rounded-lg text-gray-50 font-normal tracking-wide bg-[#6441a5]  hover:scale-105 ease-in duration-200"
               >
-                Checkout
+                Cash on Delievery
               </button>
             </form>
           </div>

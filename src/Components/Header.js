@@ -5,6 +5,8 @@ import logo from "../Assets/TechSphere.svg";
 import { Link, NavLink } from "react-router-dom";
 import { useSellerAuth } from "./ContextAuth/Sellerauthcontext";
 import { useCartContext } from "./Cart_context";
+
+import { BsChevronDown } from "react-icons/bs";
 const navMenu = [
   {
     title: "Home",
@@ -12,13 +14,13 @@ const navMenu = [
     cName: "nav-links",
   },
   {
-    title: "New Arrivals",
-    url: "#",
+    title: "About",
+    url: "/About",
     cName: "nav-links",
   },
   {
-    title: "About",
-    url: "/About",
+    title: "Categories",
+    url: "#",
     cName: "nav-links",
   },
 ];
@@ -69,15 +71,13 @@ const Header = () => {
 
   return (
     <nav className={`navbar-items ${isVisible ? "visible" : "hidden"}`}>
-      <img src={logo} className="nav-logo" />
-
       <div className="nav-icons-mobile">
-        <Link to="" className="nav-icons">
+        {/* <Link to="" className="nav-icons">
           <i
             className="fa-solid fa-magnifying-glass fa-xl"
             style={{ color: "#000000" }}
           ></i>
-        </Link>
+        </Link> */}
         <Link to="/CartPage" className="nav-icons">
           <span className="fa-stack has-badge" data-count={cart.length}>
             <i
@@ -101,23 +101,42 @@ const Header = () => {
       <ul className={menuClick ? "nav-menu active" : "nav-menu"}>
         {navMenu.map((item, index) => (
           <li key={index}>
-            {/* <i className="fa-solid fa-house"></i> */}
-            <Link className={item.cName} to={item.url}>
+            {/* <i className="fa-solid fa-house"></i> */} 
+            <Link
+              className={`${item.cName} ${
+                item.title === "Categories" ? "group relative" : ""
+              }`}
+              to={item.url}
+            >
               {item.title}
+              <div className=" absolute top-10 -left-3 hidden group-hover:flex hover:flex  group-hover:flex-col items-center justify-center p-4 gap-2 bg-slate-200 shadow-lg rounded-lg">
+                <Link
+                  to="/LaptopPage"
+                  className="text-lg text-gray-700 font-medium text-left"
+                >
+                  Laptops
+                </Link>
+                <Link
+                  to="/HeadphonesPage"
+                  className="text-lg text-gray-700 font-medium text-left"
+                >
+                  Headphones
+                </Link>
+              </div>
             </Link>
           </li>
         ))}
 
         {/* ***************** nav icons ************** */}
         <div className="nav-icons-parent">
-          <li>
+          {/* <li>
             <a href="#" className="nav-icons-search-cart">
               <i
                 className="fa-solid fa-magnifying-glass fa-xl"
                 style={{ color: "#000000" }}
               ></i>
             </a>
-          </li>
+          </li> */}
 
           <li>
             <Link to="/CartPage" className="nav-icons-search-cart">
@@ -184,6 +203,10 @@ const Header = () => {
           </li>
         </div>
       </ul>
+
+      <div>
+        <img src={logo} className="nav-logo" />
+      </div>
     </nav>
   );
 };

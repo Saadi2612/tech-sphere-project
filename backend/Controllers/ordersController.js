@@ -21,7 +21,7 @@ module.exports.orders = async (req, res, next) => {
       City,
       State,
       Zipcode,
-     
+      ParcelStatus,
       items,
       customerdata,
     } = req.body;
@@ -33,10 +33,30 @@ module.exports.orders = async (req, res, next) => {
       City,
       State,
       Zipcode,
+      ParcelStatus,
       items,
       customerdata,
     });
   } catch (err) {
     console.log(err);
+  }
+};
+
+
+
+module.exports.UpdateStatus = async (req, res) => {
+  console.log(req.params.id);
+
+  const { id } = req.params;
+
+  try {
+    const result = await ordersModel.updateOne(
+      { _id: id },{ ParcelStatus: "Delivered" } );
+
+    //console.log(result);
+
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).send({ message: "Error fetching users!", status: false });
   }
 };

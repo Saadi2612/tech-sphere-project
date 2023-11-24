@@ -111,9 +111,6 @@
 
 .dexscriptiontag {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 35px;
 }
 
 .descriptiondivide {
@@ -131,11 +128,11 @@
 
 .griddiv1 {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   background-color: white;
   height: auto;
   width: 100%;
-  justify-items: center;
+  place-items: center;
 }
 
 .descriptionimage {
@@ -150,15 +147,14 @@
 }
 
 .emptydetaildivlast {
-  height: 300px;
+  height: 200px;
 }
 
-.reviewsform{
-padding-left: 350px;
+.reviewsform {
+  padding-left: 350px;
 }
 
-
-.reviewsheading{
+.reviewsheading {
   padding-left: 510px;
   padding-bottom: 30px;
 }
@@ -179,7 +175,7 @@ padding-left: 350px;
   background-color: #a17ee1;
 }
 
-.reviews{
+.reviews {
   height: 150px;
   width: auto;
   border-radius: 7px;
@@ -187,13 +183,9 @@ padding-left: 350px;
   justify-content: center;
 }
 
-.reviewsprint{
+.reviewsprint {
   justify-content: center;
   text-align: center;
   border-radius: 7px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  
-
-
-
 }

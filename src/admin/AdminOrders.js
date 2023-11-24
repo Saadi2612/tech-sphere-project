@@ -15,9 +15,9 @@ import preview from "../Assets/headphones-category.jpg";
 const AdminUsers = () => {
   const [allOrders, setAllOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [StatusPrompt, setStatusPrompt] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [selectedId, setSelectedId] = useState("");
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -46,6 +46,25 @@ const AdminUsers = () => {
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  const handleStatusPrompt = (id) => {
+    setStatusPrompt(true);
+    setSelectedId(id);
+    console.log(id);
+  };
+
+  const handleUpdateDelivered = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/orders/${selectedId}`
+      );
+
+      setStatusPrompt(false);
+      fetchOrders();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="w-screen overflow-hidden">
@@ -103,14 +122,59 @@ const AdminUsers = () => {
                     className="w-full rounded-lg p-4 flex justify-between items-center bg-violet-200 border-4 border-violet-300"
                   >
                     <div className="p-2 flex flex-col w-[80%] gap-2">
+                      <p className="text-gray-500 "> Order:{order._id}</p>
                       <h2 className="font-bold text-lg tracking-wider text-gray-700">
-                        {order.items[0].name}
+                        Product: {order.items[0].name}
                       </h2>
                       <p className="text-gray-500 truncate">
                         {" "}
-                        {order.items[0].counter}
+                        Quantity:{order.items[0].counter}
                       </p>
-                      <p className="text-gray-500"> {order.items[0].price}</p>
+                      <p className="text-gray-500 "> Email:{order.email}</p>
+                      <p className="text-gray-500 "> Address:{order.Address}</p>
+                      <p className="text-gray-500">
+                        {" "}
+                        Price: Rs.{order.items[0].price}{" "}
+                      </p>
+                      <p className="text-orange-500 ">
+                        {" "}
+                        Status:{order.ParcelStatus}
+                      </p>
+                    </div>
+
+                    <div className="w-full flex justify-end ">
+                      <button
+                        onClick={() => handleStatusPrompt(order._id)}
+                        className="p-1 rounded-md text-white text-xl bg-[#6441a5] hover:bg-red-600 hover:scale-105 ease-in duration-200"
+                      >
+                        status
+                      </button>
+
+                      {StatusPrompt && (
+                        <div class="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+                          <div className="flex flex-col items-center py-6 px-4 bg-white rounded-xl">
+                            <div>
+                              <p className="text-gray-600 font-medium tracking-wide">
+                                Order Status
+                              </p>
+                            </div>
+                            <div className="flex justify-end gap-4 py-3">
+                              <button
+                                onClick={handleUpdateDelivered}
+                                className="px-6 py-1 bg-green-500 rounded-md text-white"
+                              >
+                                Delievered
+                              </button>
+                              <button
+                                onClick={() => setStatusPrompt(false)}
+                                className="px-6 py-1 border-2 text-white-500 bg-red-500  rounded-md"
+                              >
+                                Pending
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
@@ -123,4 +187,4 @@ const AdminUsers = () => {
   );
 };
 
-export default AdminUsers;
+export default AdminUsers;

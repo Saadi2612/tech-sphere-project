@@ -44,6 +44,9 @@ const laptopSchema = new mongoose.Schema({
   SellerAuth:{
 type: String
   },
+  SellerName:{
+    type:String
+  },
 });
 
 module.exports = mongoose.model("Laptop", laptopSchema);

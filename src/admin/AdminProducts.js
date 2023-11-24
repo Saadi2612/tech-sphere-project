@@ -139,6 +139,9 @@ const AdminProducts = () => {
                         <p className="truncate text-gray-500 pb-1">
                           {product.description}
                         </p>
+                        <p className="truncate text-gray-500 pb-1">
+                          {product.SellerName}
+                        </p>
                         <h1 className="text-2xl text-gray-700 font-bold">
                           Rs. {product.price}
                         </h1>

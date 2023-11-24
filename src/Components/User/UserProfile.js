@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import Header from "../Header";
+
 import Footer from "../Footer";
 import "./UserProfileStyles.css";
+import Header from "../Header";
+import { Link } from "react-router-dom";
 import { useAuth } from "../ContextAuth/Auth";
 import axios from "axios";
 const UserProfile = () => {
@@ -27,7 +29,6 @@ const UserProfile = () => {
       });
   }, []);
 
-
   const handleLogout = () => {
     setAuth({
       ...auth,
@@ -39,61 +40,72 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="main-container">
-      <div className="main">
-        <div class="container">
-          <div className="firstChild">
-            <img
-              src="https://bootdey.com/img/Content/avatar/avatar7.png"
-              class="rounded-circle p-5 bg-primary ml-12"
-              width="200"
-            ></img>
-            <h1 class="mt-4 text-lg font-semibold">{auth?.user?.name}</h1>
-          </div>
-          <div className="secondChild">
-            <div className="w-full">
-              <h1 class="mb-4 ml-2 text-md font-medium mt-8">
-                Name: {auth?.user?.name}
-              </h1>
-              <h1 class="mb-4 ml-2 text-md font-medium">
-                Email Address:{auth?.user?.email}
-              </h1>
-              <h1 class="mb-4 ml-2 text-md font-medium">
-                Address:{auth?.user?.phone}
-              </h1>
+    <div>
+      <Header />
+      <div className="h-9"></div>
+      <div className="main-container">
+        <div className="main">
+          <div class="container">
+            <div className="firstChild">
+              <img
+                src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                class="rounded-circle p-5 bg-primary ml-12"
+                width="200"
+              ></img>
+              <h1 class="mt-4 text-lg font-semibold">{auth?.user?.name}</h1>
             </div>
-            <div className="w-full flex items-end justify-end">
-              <button class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
-                <NavLink onClick={handleLogout} to="/login">
-                  Logout
-                </NavLink>
-              </button>
+            <div className="secondChild">
+              <div className="w-full">
+                <h1 class="mb-4 ml-2 text-md font-medium mt-8">
+                  Name: {auth?.user?.name}
+                </h1>
+                <h1 class="mb-4 ml-2 text-md font-medium">
+                  Email Address:{auth?.user?.email}
+                </h1>
+                <h1 class="mb-4 ml-2 text-md font-medium">
+                  Address:{auth?.user?.phone}
+                </h1>
+              </div>
+              <div className="w-full flex items-end justify-end">
+                <button class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                  <NavLink onClick={handleLogout} to="/login">
+                    Logout
+                  </NavLink>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="history">
-        <h1 class="text-xl font-poppins font-semibold mb-4">Order History</h1>
-        <div className="bg-gradient-to-r from-[#605596] to-[#354E57] p-2 flex">
-          <p className="ml-20 text-slate-200">Products</p>
-          <p className="ml-20 text-slate-200">Quantity</p>
-          <p className="ml-12 text-slate-200">Price</p>
-        </div>
-
-        {orders?.map((item) => (
-          <div class="item">
-            <div class="description">
-              <h2>{item.items[0].name}</h2>
-            </div>
-
-            <div class="quantity">
-              <h2>{item.items[0].counter}</h2>
-            </div>
-
-            <div class="total-price"> {item.items[0].price}</div>
+        <div className="history">
+          <h1 class="text-xl font-poppins font-semibold mb-4">Order History</h1>
+          <div className="bg-gradient-to-r from-[#605596] to-[#354E57] p-2 flex">
+            <p className="ml-19 text-slate-200">Products</p>
+            <p className="ml-20 text-slate-200">Quantity</p>
+            <p className="ml-12 text-slate-200">Price</p>
+            <p className="ml-20 text-slate-200">Status</p>
           </div>
-        ))}
+
+          {orders?.map((item) => (
+            <div class="item">
+              <div class="description">
+                <Link to={"/LaptopDetailPage/" + item.items[0]._id}>
+                  {" "}
+                  <h2>{item.items[0].name}</h2>{" "}
+                </Link>
+              </div>
+
+              <div class="quantity">
+                <h2>{item.items[0].counter}</h2>
+              </div>
+
+              <div class="total-price"> {item.items[0].price}</div>
+              <div class="parcelstatus">
+                <h2>{item.ParcelStatus}</h2>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

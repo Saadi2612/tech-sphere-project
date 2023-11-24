@@ -72,6 +72,7 @@ module.exports.postLaptop = async (req, res, next) => {
       condition,
       threeSixtyImages,
       SellerAuth,
+      SellerName,
     } = req.body;
 
     const files = req.files;
@@ -97,7 +98,8 @@ module.exports.postLaptop = async (req, res, next) => {
       condition: condition,
       images: urls,
       threeSixtyImages: JSON.parse(threeSixtyImages),
-      SellerAuth:SellerAuth,
+      SellerAuth: SellerAuth,
+      SellerName: SellerName,
     });
 
     res.send({ data: response, posted: true });
@@ -122,5 +124,31 @@ module.exports.deleteProduct = async (req, res) => {
     res
       .status(500)
       .send({ message: "Error fetching products!", status: false });
+  }
+};
+
+module.exports.updateProducts = async (req, res) => {
+  console.log(req.params.id);
+  console.log(req.body);
+
+  const { _id, name, model, price, quantity, description, specs } = req.body;
+
+  try {
+    const result = await LaptopModel.findOneAndUpdate(
+      { _id: _id },
+      {
+        name: name,
+        model: model,
+        price: price,
+        quantity: quantity,
+        description: description,
+        specs: JSON.parse(specs),
+      }
+    );
+
+    console.log(result);
+    res.status(200).send({ success: true });
+  } catch (error) {
+    console.log(error);
   }
 };

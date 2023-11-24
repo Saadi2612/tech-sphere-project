@@ -123,10 +123,10 @@ const AdminUsers = () => {
                   >
                     <div className="p-2 flex flex-col w-[80%] gap-2">
                       <h2 className="font-bold text-lg tracking-wider text-gray-700">
-                        {user.name}
+                       Name: {user.name}
                       </h2>
-                      <p className="text-gray-500 truncate">{user.email}</p>
-                      <p className="text-gray-500">{user.phone}</p>
+                      <p className="text-gray-500 truncate">Email: {user.email}</p>
+                      <p className="text-gray-500">Phone:{user.phone}</p>
                     </div>
                     <div className="flex items-end h-full w-[10%]">
                       <button

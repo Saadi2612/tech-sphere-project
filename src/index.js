@@ -35,6 +35,9 @@ import AdminUsers from "./admin/AdminUsers";
 import AdminSellers from "./admin/AdminSellers";
 import AdminOrders from "./admin/AdminOrders";
 import About from "./Components/About/About";
+import SellerProducts from "./Seller/SellerProducts";
+import HeadphonesPage from "./Components/HeadphonesPage";
+import Chatbot from "./Components/Chatbot";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -52,6 +55,10 @@ const router = createBrowserRouter([
   {
     path: "/About",
     element: <About />,
+  },
+  {
+    path: "/Chatbot",
+    element: <Chatbot />,
   },
   {
     path: "/AdminHome/products",
@@ -127,12 +134,20 @@ const router = createBrowserRouter([
         path: "",
         element: <SellerHome />,
       },
+      {
+        path: "/SellerHome/my-products",
+        element: <SellerProducts />,
+      },
     ],
   },
 
   {
     path: "/Login",
     element: <Login />,
+  },
+  {
+    path: "/HeadphonesPage",
+    element: <HeadphonesPage />,
   },
   {
     path: "/SellerLogin",

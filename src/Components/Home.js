@@ -8,13 +8,13 @@ import Footer from "./Footer";
 import blackHeadphones from "../Assets/headphones-category.jpg";
 import laptops from "../Assets/laptop-category.jpg";
 import peripherals from "../Assets/peripheral-category.jpg";
-
+import Chatbot from "./Chatbot";
 import { Link, useNavigate } from "react-router-dom";
 
 const categories = [
   {
     title: "Headphones",
-    path: "/headphones",
+    path: "/HeadphonesPage",
     image: blackHeadphones,
   },
   {
@@ -88,7 +88,7 @@ const Home = () => {
         </div>
       </div>
    
-
+    <Chatbot/>
       <div>
         <Footer />
       </div>

@@ -125,10 +125,12 @@ const AdminSellers = () => {
                   >
                     <div className="p-2 flex flex-col w-[80%] gap-2">
                       <h2 className="font-bold text-lg tracking-wider text-gray-700">
-                        {seller.name}
+                       Name:{seller.name}
                       </h2>
-                      <p className="text-gray-500 truncate">{seller.email}</p>
-                      <p className="text-gray-500">{seller.phone}</p>
+                      <p className="text-gray-500 truncate">Email:{seller.email}</p>
+                      <p className="text-gray-500 ">Address:{seller.address}</p>
+
+                      <p className="text-gray-500">Phone:{seller.phone}</p>
                     </div>
                     <div className="flex items-end h-full w-[10%]">
                       <button
@@ -174,4 +176,4 @@ const AdminSellers = () => {
   );
 };
 
-export default AdminSellers;
+export default AdminSellers;

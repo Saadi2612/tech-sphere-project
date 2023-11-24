@@ -3,7 +3,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import axios from "axios";
 import { Orbitals } from "react-spinners-css";
-import {useSellerAuth} from "../Components/ContextAuth/Sellerauthcontext"
+import { useSellerAuth } from "../Components/ContextAuth/Sellerauthcontext";
 import SellerSideBar from "./SellerSideBar";
 
 import logo from "../Assets/TechSphere.svg";
@@ -37,15 +37,14 @@ const SellerHome = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videoFrames, setVideoFrames] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
- const [sellerauth, setsellerAuth] = useSellerAuth();
- console.log(sellerauth)
+  const [sellerauth] = useSellerAuth();
+  //console.log(sellerauth);
   const [selectedCategory, setSelectedCategory] = useState(
     categories[0].category
   );
   const [selectedCondition, setSelectedCondition] = useState(
     condition[0].condition
   );
-
 
   const imgInputRef = useRef(null);
   const videoInputRef = useRef(null);
@@ -59,9 +58,6 @@ const SellerHome = () => {
     });
   };
 
-
-const SellerAuth = sellerauth?.seller?._id;  //line 106 
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -72,8 +68,11 @@ const SellerAuth = sellerauth?.seller?._id;  //line 106
     e.preventDefault();
 
     // Ensure that laptopData.images contains the selected images
-    console.log("Selected Images:", laptopData.images);
-
+    //console.log("Selected Images:", laptopData.images);
+    
+    const SellerAuth = sellerauth?.seller?._id;
+    const SellerName = sellerauth?.seller?.name;
+    console.log(SellerAuth);
     // Create a new FormData object
     const formData = new FormData();
 
@@ -94,6 +93,7 @@ const SellerAuth = sellerauth?.seller?._id;  //line 106
     formData.append("condition", selectedCondition);
     formData.append("threeSixtyImages", JSON.stringify(videoFrames));
     formData.append("SellerAuth", SellerAuth);
+    formData.append("SellerName", SellerName);
     // Check the state of the FormData object
     console.log("FormData:", formData);
 

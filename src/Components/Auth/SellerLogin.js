@@ -27,7 +27,7 @@ function SellerLogin() {
         toast.success(res.data && res.data.message);
         setsellerAuth({
           ...sellerauth,
-          seller: res.data.user,
+          seller: res.data.seller,
           token: res.data.token,
         });
         localStorage.setItem("sellerauth", JSON.stringify(res.data));

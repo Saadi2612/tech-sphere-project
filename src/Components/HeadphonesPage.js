@@ -1,7 +1,7 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
 import Header from "./Header";
 import HeroSection from "./HeroSection";
-import "./LaptopPageStyles.css";
+import "./HeadphonesPage.css";
 import { Pagination, CircularProgress } from "@mui/material";
 import heroImg from "../Assets/laptopHeroImg.jpg";
 import { Link } from "react-router-dom";
@@ -11,7 +11,7 @@ import Footer from "./Footer";
 const FilterBar = lazy(() => import("./FilterBar"));
 const CardSection = lazy(() => import("./CardSection"));
 
-const LaptopPage = () => {
+const HeadphonesPage = () => {
   const [sortBy, setSortBy] = useState("Default");
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
@@ -22,9 +22,9 @@ const LaptopPage = () => {
     try {
       const response = await axios.get("http://localhost:5000/laptops");
       const laptopsproduct = response.data.filter(
-        (laptop) => (laptop.category === "Laptop")
+        (laptop) => laptop.category === "Headphones"
       );
-      console.log(laptopsproduct)
+      console.log(laptopsproduct);
       setProducts(laptopsproduct);
       setLoading(false);
       console.log(response.data);
@@ -56,7 +56,7 @@ const LaptopPage = () => {
   return (
     <div>
       <Header />
-      <HeroSection image={heroImg} text="Shop for laptops" />
+      <HeroSection image={heroImg} text="Shop for Headphones" />
 
       <Suspense fallback={<CircularProgress />}>
         <FilterBar
@@ -97,4 +97,4 @@ const LaptopPage = () => {
   );
 };
 
-export default LaptopPage;
+export default HeadphonesPage;
