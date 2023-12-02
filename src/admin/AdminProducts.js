@@ -105,12 +105,18 @@ const AdminProducts = () => {
               </div>
             </div>
           </div>
+
+          <div className="bg-gray-200 w-full flex justify-end items-center p-2">
+
+          
+
+          </div>
           {isLoading ? (
             <div class="absolute inset-0 flex items-center justify-center bg-black/10">
               <Orbitals />
             </div>
           ) : (
-            <div className="w-full p-4 grid grid-cols-3 gap-4">
+            <div className="w-full py-8">
               {filteredProducts.length === 0 ? (
                 <div>
                   <h3 className="font-semibold text-gray-800 text-lg">
@@ -118,71 +124,55 @@ const AdminProducts = () => {
                   </h3>
                 </div>
               ) : (
-                filteredProducts?.map((product, index) => (
-                  <div
-                    key={index}
-                    className="w-full rounded-lg p-4 flex flex-col justify-between items-center bg-violet-200"
-                  >
-                    <div className="w-full h-auto aspect-[4/3] overflow-hidden rounded-lg">
-                      <img
-                        className="object-cover w-full rounded-lg hover:scale-105 ease-linear duration-200"
-                        src={product.images[0]}
-                        alt="/"
-                      />
-                    </div>
+                <div className="overflow-x-auto rounded-lg border border-gray-200">
+                  <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                    <thead className="ltr:text-left rtl:text-right text-left">
+                      <tr>
+                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                          Name
+                        </th>
+                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                          Category
+                        </th>
+                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                          Description
+                        </th>
+                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                          Price
+                        </th>
+                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
 
-                    <div className="flex flex-col w-full justify-start">
-                      <div>
-                        <h2 className="text-gray-700 font-bold text-xl tracking-wide">
-                          {product.name}
-                        </h2>
-                        <p className="truncate text-gray-500 pb-1">
-                          {product.description}
-                        </p>
-                        <p className="truncate text-gray-500 pb-1">
-                          {product.SellerName}
-                        </p>
-                        <h1 className="text-2xl text-gray-700 font-bold">
-                          Rs. {product.price}
-                        </h1>
-                      </div>
-                      <div className="w-full flex justify-end ">
-                        <button
-                          onClick={() => handleDeletePrompt(product._id)}
-                          className="p-2 rounded-md text-white text-xl bg-red-500 hover:bg-red-600 hover:scale-105 ease-in duration-200"
-                        >
-                          <RiDeleteBin6Line />
-                        </button>
-
-                        {deletePrompt && (
-                          <div class="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-                            <div className="flex flex-col items-center py-6 px-4 bg-white rounded-xl">
-                              <div>
-                                <p className="text-gray-600 font-medium tracking-wide">
-                                  Are you sure to delete the product?
-                                </p>
-                              </div>
-                              <div className="flex justify-end gap-4 py-3">
-                                <button
-                                  onClick={handleProductDelete}
-                                  className="px-6 py-1 bg-red-500 rounded-md text-white"
-                                >
-                                  Yes
-                                </button>
-                                <button
-                                  onClick={() => setDeletePrompt(false)}
-                                  className="px-6 py-1 border-2 text-violet-500 border-violet-500 rounded-md"
-                                >
-                                  No
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))
+                    <tbody className="divide-y divide-gray-200">
+                      {filteredProducts?.map((product, index) => (
+                        <tr key={index}>
+                          <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                            {product.name}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                            {product.category}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 text-gray-700 max-w-md overflow-hidden truncate">
+                            <p className="truncate text-ellipsis overflow-auto">
+                              {product.description}
+                            </p>
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                            {product.price}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                            <button className="px-5 py-2 rounded-md bg-red-300/40 text-red-500">
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           )}

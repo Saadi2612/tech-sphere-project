@@ -2,22 +2,20 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../Components/ContextAuth/Auth";
 
-
-
 const SideBar = () => {
-   const [auth, setAuth] = useAuth();
-   const handleLogout = () => {
-     setAuth({
-       ...auth,
-       user: null,
-       token: "",
-     });
+  const [auth, setAuth] = useAuth();
+  const handleLogout = () => {
+    setAuth({
+      ...auth,
+      user: null,
+      token: "",
+    });
 
-     localStorage.removeItem("auth");
-   };
+    localStorage.removeItem("auth");
+  };
 
   return (
-    <div className="flex h-full border-r-2 border-violet-300 pt-16">
+    <div className="flex h-full border-r-2 border-slate-100 pt-16">
       <div className="w-full h-full p-3 flex flex-col justify-start">
         <div>
           <h1 className="text-3xl text-[#6441a5] font-bold pb-3">Dashboard</h1>
