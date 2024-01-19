@@ -4,10 +4,11 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import axios from "axios";
 import { Orbitals } from "react-spinners-css";
 import { useSellerAuth } from "../Components/ContextAuth/Sellerauthcontext";
-import SellerSideBar from "./SellerSideBar";
 
 import logo from "../Assets/TechSphere.svg";
 import preview from "../Assets/headphones-category.jpg";
+
+import SideBar from "./Sidebar";
 
 const categories = [
   { category: "Category" },
@@ -69,7 +70,7 @@ const SellerHome = () => {
 
     // Ensure that laptopData.images contains the selected images
     //console.log("Selected Images:", laptopData.images);
-    
+
     const SellerAuth = sellerauth?.seller?._id;
     const SellerName = sellerauth?.seller?.name;
     console.log(SellerAuth);
@@ -85,7 +86,7 @@ const SellerHome = () => {
     formData.append("name", laptopData.name);
     formData.append("model", laptopData.model);
     formData.append("price", laptopData.price);
-    formData.append("quantity", laptopData.quantity);
+
     formData.append("description", laptopData.description);
     formData.append("specs", JSON.stringify(laptopData.specs));
     formData.append("sku", laptopData.sku);
@@ -240,7 +241,7 @@ const SellerHome = () => {
 
       <div className="w-full grid grid-cols-5 h-screen">
         <div class="col-span-1">
-          <SellerSideBar />
+          <SideBar />
         </div>
 
         <div className="grid col-span-4 px-4 py-16 bg-[#f4effc] overflow-y-auto">
@@ -288,7 +289,7 @@ const SellerHome = () => {
                   required
                 />
               </div>
-              <div className="flex flex-col items-start">
+              {/* <div className="flex flex-col items-start">
                 <label className="py-1 pt-2 font-semibold text-black">
                   Quantity
                 </label>
@@ -300,7 +301,7 @@ const SellerHome = () => {
                   onChange={handleInputChange}
                   required
                 />
-              </div>
+              </div> */}
               <div className="flex flex-col items-start">
                 <label className="py-1 pt-2 font-semibold text-black">
                   SKU

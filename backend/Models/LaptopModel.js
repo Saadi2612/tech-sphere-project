@@ -13,10 +13,7 @@ const laptopSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  quantity: {
-    type: Number,
-    required: true,
-  },
+
   specs: {
     type: [String],
   },
@@ -41,11 +38,11 @@ const laptopSchema = new mongoose.Schema({
   threeSixtyImages: {
     type: [String],
   },
-  SellerAuth:{
-type: String
+  SellerAuth: {
+    type: String,
   },
-  SellerName:{
-    type:String
+  SellerName: {
+    type: String,
   },
 });
 

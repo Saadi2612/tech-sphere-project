@@ -11,6 +11,16 @@ module.exports.getLaptops = async (req, res) => {
   res.send(response);
 };
 
+module.exports.getAdminProducts = async (req, res) => {
+  // console.log("here");
+  // console.log(req);
+  const response = await LaptopModel.find().select(
+    "sku name price category quantity specs SellerAuth SellerName"
+  );
+  // console.log(response);
+  res.send(response);
+};
+
 const opts = {
   overwrite: true,
   invalidate: true,
@@ -64,7 +74,6 @@ module.exports.postLaptop = async (req, res, next) => {
       name,
       model,
       price,
-      quantity,
       description,
       specs,
       sku,
@@ -90,7 +99,7 @@ module.exports.postLaptop = async (req, res, next) => {
       name: name,
       model: model,
       price: price,
-      quantity: quantity,
+
       description: description,
       specs: JSON.parse(specs),
       sku: sku,

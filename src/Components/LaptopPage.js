@@ -22,9 +22,9 @@ const LaptopPage = () => {
     try {
       const response = await axios.get("http://localhost:5000/laptops");
       const laptopsproduct = response.data.filter(
-        (laptop) => (laptop.category === "Laptop")
+        (laptop) => laptop.category === "Laptop"
       );
-      console.log(laptopsproduct)
+      console.log(laptopsproduct);
       setProducts(laptopsproduct);
       setLoading(false);
       console.log(response.data);

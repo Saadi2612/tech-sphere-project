@@ -1,16 +1,30 @@
 import React, { useState, Fragment, useRef, useEffect } from "react";
+
 import { Listbox, Transition } from "@headlessui/react";
+
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BiSearch } from "react-icons/bi";
+import { IoWarningOutline } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 import axios from "axios";
 import { Orbitals } from "react-spinners-css";
 
+import { motion, AnimatePresence, easeInOut } from "framer-motion";
+import { WarningAmberRounded } from "@mui/icons-material";
+
 import SideBar from "./SideBar";
 
 import logo from "../Assets/TechSphere.svg";
 import preview from "../Assets/headphones-category.jpg";
+
+const sorts = [
+  { sort: "Sort", value: "Sort" },
+  { sort: "A to Z", value: "A-Z" },
+  { sort: "Z to A", value: "Z-A" },
+  { sort: "Price: high to low", value: "hi-lo" },
+  { sort: "Price: low to high", value: "lo-hi" },
+];
 
 const AdminProducts = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -19,6 +33,8 @@ const AdminProducts = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [deletePrompt, setDeletePrompt] = useState(false);
   const [selectedId, setSelectedId] = useState("");
+  const [selectedSort, setSelectedSort] = useState(sorts[0].value);
+  const [searchedProducts, setSearchedProducts] = useState(allProducts);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -27,6 +43,56 @@ const AdminProducts = () => {
   const filteredProducts = allProducts.filter((product) => {
     return product.name.toLowerCase().includes(searchTerm.toLowerCase());
   });
+
+  const sorting = (data) => {
+    switch (selectedSort) {
+      case "A-Z":
+        // console.log(data.slice().sort((a, b) => a.name.localeCompare(b.name)));
+        return data.slice().sort((a, b) => a.name.localeCompare(b.name));
+      case "Z-A":
+        return data.slice().sort((a, b) => b.name.localeCompare(a.name));
+      case "hi-lo":
+        return data.sort((a, b) => a.price - b.price);
+      case "lo-hi":
+        return data.sort((a, b) => b.price - a.price);
+      default:
+        return data;
+    }
+  };
+
+  // Filter posts on typing in search input
+  // Update the search term state
+  const handleSearchChange = () => {
+    // const searchTerm = event.target.value;
+    // setSearchTerm(searchTerm);
+
+    // If search term is empty, set filtered products to original array
+    if (!searchTerm.trim()) {
+      setSearchedProducts(allProducts);
+    } else {
+      // Filter products based on the search term
+      const filtered = allProducts.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSearchedProducts(filtered);
+    }
+  };
+
+  useEffect(() => {
+    handleSearchChange();
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const sorted = sorting(searchedProducts);
+
+    setSearchedProducts(sorted);
+  }, [selectedSort]);
+
+  // filteredProducts = sorting(allProducts);
+
+  const handleSortChange = (e) => {
+    setSelectedSort(e.value);
+  };
 
   const fetchProducts = async () => {
     setIsLoading(true);
@@ -37,6 +103,7 @@ const AdminProducts = () => {
       );
 
       setAllProducts(products.data);
+      setSearchedProducts(products.data);
       console.log(products.data);
       setIsLoading(false);
     } catch (error) {
@@ -52,7 +119,7 @@ const AdminProducts = () => {
   const handleDeletePrompt = (id) => {
     setDeletePrompt(true);
     setSelectedId(id);
-    console.log(id);
+    // console.log(id);
   };
 
   const handleProductDelete = async () => {
@@ -68,15 +135,47 @@ const AdminProducts = () => {
     }
   };
 
+  // Dropdown to sort posts in ascending or descending order depending on title.
+  // function updatePosts(e) {
+  //   setSortType(e);
+  //   setstate({
+  //     query: state.query,
+  //     list: !resultx
+  //       ? sortFunc(posts, e, sortByField)
+  //       : sortFunc(result, e, sortByField),
+  //   });
+  // }
+
+  // // Dropdown to sort posts in ascending or descending order depending on title.
+  // function sortBy(e) {
+  //   setSortByField(e);
+  //   setstate({
+  //     query: state.query,
+  //     list: !result
+  //       ? sortFunc(posts, sortType, e)
+  //       : sortFunc(result, sortType, e),
+  //   });
+  // }
+
   return (
     <div className="w-screen overflow-hidden">
-      <div className="flex justify-between items-center fixed w-full h-[8vh] p-4 bg-transparent backdrop-blur-sm border-b-2 border-violet-300 z-10">
+      <div className="flex justify-between items-center fixed w-full h-[8vh] p-4 bg-white z-10">
         <div className="">
           <img src={logo} alt="logo" className="h-9" />
         </div>
 
-        <div>
-          <h2>search bar</h2>
+        <div className="w-[40%] flex justify-center items-center rounded-lg bg-violet-100 p-0.5 gap-2">
+          <input
+            value={searchTerm}
+            onChange={handleSearch}
+            type="text"
+            placeholder="Search items..."
+            className="outline-none border-0 px-4 py-1 w-[100%] font-normal text-base text-gray-700 placeholder:text-slate-500 bg-transparent rounded-lg"
+          />
+
+          <div className="flex items-center justify-center text-gray-800 text-xl rounded-md p-2 cursor-pointer">
+            <BiSearch />
+          </div>
         </div>
         <div>
           <h2>icons and account</h2>
@@ -88,90 +187,268 @@ const AdminProducts = () => {
           <SideBar />
         </div>
 
-        <div className="flex flex-col col-span-4 px-4 py-16 bg-[#f4effc] overflow-y-auto relative">
-          <div className="w-full p-2 flex items-center justify-center bg-violet-200 rounded-lg">
-            {/* Search Bar and filter */}
-            <div className="w-[40%] flex justify-center items-center rounded-lg bg-white p-0.5 gap-2">
-              <input
-                value={searchTerm}
-                onChange={handleSearch}
-                type="text"
-                placeholder="Search items..."
-                className="outline-none border-0 px-4 py-1 w-[100%] font-normal text-base text-gray-600 rounded-lg"
-              />
+        <div className="flex flex-col col-span-4 px-4 py-16 bg-[#FFFDFD] overflow-y-auto relative">
+          <div className="w-full p-2 flex items-center justify-between rounded-lg sticky top-0">
+            {/* filters */}
 
-              <div className="flex items-center justify-center text-gray-600 text-xl rounded-md p-2 cursor-pointer">
-                <BiSearch />
-              </div>
+            <div className="w-full h-full flex justify-end items-center">
+              <Listbox value={selectedSort} onChange={handleSortChange}>
+                <div className="relative h-full w-40">
+                  <Listbox.Button className="relative w-full h-full cursor-default rounded-lg bg-violet-100 py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">
+                    <span className="block truncate">{selectedSort}</span>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                      <ChevronDownIcon
+                        className="h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </Listbox.Button>
+                  <Transition
+                    as={Fragment}
+                    leave="transition ease-in duration-150"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg shadow-violet-200 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                      {sorts.map((sort, index) => (
+                        <Listbox.Option
+                          key={index}
+                          className={({ active }) =>
+                            `relative cursor-default select-none py-2 px-2 ${
+                              active
+                                ? "bg-sky-200/60 text-sky-700"
+                                : "text-gray-700"
+                            }`
+                          }
+                          value={sort}
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span
+                                className={`block truncate ${
+                                  selected
+                                    ? "font-semibold text-sky-700"
+                                    : "font-normal"
+                                }`}
+                              >
+                                {sort.sort}
+                              </span>
+                            </>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </Listbox>
             </div>
           </div>
 
-          <div className="bg-gray-200 w-full flex justify-end items-center p-2">
-
-          
-
+          <div className="w-full flex justify-end items-center">
+            {/* <Listbox
+              value={selectedSort}
+              onChange={(e) => setSelectedSort(e.sort)}
+            >
+              <div className="relative w-52">
+                <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                  <span className="block truncate">{selectedSort}</span>
+                  <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                    <ChevronDownIcon
+                      className="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </Listbox.Button>
+                <Transition
+                  as={Fragment}
+                  leave="transition ease-in duration-150"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg shadow-violet-200 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    {sort.map((sort, index) => (
+                      <Listbox.Option
+                        key={index}
+                        className={({ active }) =>
+                          `relative cursor-default select-none py-2 ${
+                            active
+                              ? "bg-violet-100 text-violet-900"
+                              : "text-gray-900"
+                          }`
+                        }
+                        value={sort}
+                      >
+                        {({ selected }) => (
+                          <>
+                            <span
+                              className={`block truncate ${
+                                selected ? "font-semibold" : "font-normal"
+                              }`}
+                            >
+                              {sort.sort}
+                            </span>
+                          </>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </Transition>
+              </div>
+            </Listbox> */}
           </div>
+
           {isLoading ? (
-            <div class="absolute inset-0 flex items-center justify-center bg-black/10">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/10">
               <Orbitals />
             </div>
           ) : (
             <div className="w-full py-8">
-              {filteredProducts.length === 0 ? (
-                <div>
+              {searchedProducts.length === 0 ? (
+                <div className="w-full grid place-items-center py-10">
                   <h3 className="font-semibold text-gray-800 text-lg">
                     No products found!
                   </h3>
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-lg border border-gray-200">
-                  <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                    <thead className="ltr:text-left rtl:text-right text-left">
-                      <tr>
-                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                          Name
-                        </th>
-                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                          Category
-                        </th>
-                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                          Description
-                        </th>
-                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                          Price
-                        </th>
-                        <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
+                <div className="">
+                  <div className="py-4 overflow-x-auto">
+                    <div className="inline-block min-w-full overflow-hidden rounded-lg shadow-md shadow-black/10">
+                      <table className="min-w-full leading-normal">
+                        <thead>
+                          <tr className="bg-violet-100">
+                            <th
+                              scope="col"
+                              className="px-5 py-3 text-sm font-semibold text-left text-violet-900 uppercase border-b border-violet-400"
+                            >
+                              SKU
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-5 py-3 text-sm font-semibold text-left text-violet-900 uppercase border-b border-violet-400"
+                            >
+                              Name
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-5 py-3 text-sm font-semibold text-left text-violet-900 uppercase border-b border-violet-400"
+                            >
+                              Category
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-5 py-3 text-sm font-semibold text-left text-violet-900 uppercase border-b border-violet-400"
+                            >
+                              Price
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-5 py-3 text-sm font-semibold text-left text-violet-900 uppercase border-b border-violet-400"
+                            >
+                              Quantity
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-5 py-3 text-sm font-semibold text-left text-violet-900 uppercase border-b border-violet-400"
+                            >
+                              Action
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {searchedProducts?.map((product, index) => (
+                            <tr key={index} className="bg-slate-50">
+                              <td className="px-5 py-5 text-sm border-t border-violet-300">
+                                <p className="text-gray-900 whitespace-no-wrap">
+                                  {product.sku}
+                                </p>
+                              </td>
+                              <td className="px-5 py-5 text-sm border-t border-violet-300">
+                                <p className="text-gray-900 whitespace-no-wrap">
+                                  {product.name}
+                                </p>
+                              </td>
+                              <td className="px-5 py-5 text-sm border-t border-violet-300">
+                                <p className="text-gray-900 whitespace-no-wrap">
+                                  {product.category}
+                                </p>
+                              </td>
+                              <td className="px-5 py-5 text-sm border-t border-violet-300">
+                                <p className="text-gray-900 whitespace-no-wrap">
+                                  {product.price}
+                                </p>
+                              </td>
+                              <td className="px-5 py-5 text-sm border-t border-violet-300">
+                                <p className="text-gray-900 whitespace-no-wrap">
+                                  {product.quantity}
+                                </p>
+                              </td>
+                              <td className="px-5 py-3 text-sm border-t border-violet-300">
+                                <button
+                                  onClick={() =>
+                                    handleDeletePrompt(product._id)
+                                  }
+                                  className="px-5 py-2 font-medium tracking-wide rounded-md bg-red-200/50 text-red-500"
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
 
-                    <tbody className="divide-y divide-gray-200">
-                      {filteredProducts?.map((product, index) => (
-                        <tr key={index}>
-                          <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                            {product.name}
-                          </td>
-                          <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                            {product.category}
-                          </td>
-                          <td className="whitespace-nowrap px-4 py-2 text-gray-700 max-w-md overflow-hidden truncate">
-                            <p className="truncate text-ellipsis overflow-auto">
-                              {product.description}
-                            </p>
-                          </td>
-                          <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                            {product.price}
-                          </td>
-                          <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                            <button className="px-5 py-2 rounded-md bg-red-300/40 text-red-500">
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                    <AnimatePresence>
+                      {deletePrompt && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{
+                            opacity: 0,
+                          }}
+                          className="fixed inset-0 p-16 bg-black/30 backdrop-blur-sm z-10"
+                        >
+                          <div className="w-full h-full grid place-items-center p-4">
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{
+                                opacity: 0,
+                                scale: 0.9,
+                              }}
+                              className="flex flex-col items-start w-full max-w-xs rounded-lg p-4 bg-white"
+                            >
+                              <div className="flex flex-col items-center font-sans gap-2 w-full py-2">
+                                <span className="p-2 grid place-items-center rounded-full text-orange-500 bg-orange-200">
+                                  <IoWarningOutline size={24} />
+                                </span>
+                                <h1 className="px-1 text-xl font-semibold text-gray-700">
+                                  Confirm Delete
+                                </h1>
+                              </div>
+                              <div className="py-2 px-2">
+                                <p>Are you sure you want to this product?</p>
+                                <div className="flex justify-between w-full py-4 px-6 gap-2">
+                                  <button
+                                    onClick={handleProductDelete}
+                                    className="px-4 py-2 w-full bg-red-300/40 text-red-500 rounded-md hover:bg-red-300/70"
+                                  >
+                                    Delete
+                                  </button>
+                                  <button
+                                    onClick={() => setDeletePrompt(false)}
+                                    className="px-4 py-2 w-full bg-gray-300/40 text-gray-600 rounded-md hover:bg-gray-300/70"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            </motion.div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               )}
             </div>

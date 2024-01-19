@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { useAuth } from "../Components/ContextAuth/Auth";
+import { useSellerAuth } from "../Components/ContextAuth/Sellerauthcontext";
 
 import {
   FaCubes,
@@ -14,43 +14,32 @@ import {
 const menuItems = [
   {
     title: "Products",
-    path: "/adminHome/products",
+    path: "/SellerHome/my-products",
     icon: <FaCubes size={18} />,
   },
   {
-    title: "Users",
-    path: "/adminHome/users",
-    icon: <FaUserFriends size={18} />,
-  },
-  {
-    title: "Sellers",
-    path: "/adminHome/sellers",
-    icon: <FaUserTag size={18} />,
-  },
-  {
     title: "Orders",
-    path: "/adminHome/orders",
+    path: "/SellerHome/orders",
     icon: <FaBoxes size={18} />,
   },
 ];
 
-const SideBar = () => {
+const Sidebar = () => {
+  const [sellerauth, setsellerAuth] = useSellerAuth();
+
   const location = useLocation();
   const { hash, pathname, search } = location;
+  const currentPath = pathname.split("/")[2];
 
-  const [auth, setAuth] = useAuth();
-  const handleLogout = () => {
-    setAuth({
-      ...auth,
-      user: null,
+  const handlesellerLogout = () => {
+    setsellerAuth({
+      ...sellerauth,
+      seller: null,
       token: "",
     });
 
-    localStorage.removeItem("auth");
+    localStorage.removeItem("sellerauth");
   };
-
-  const currentPath = pathname.split("/")[2];
-  const handleLinkClick = () => {};
 
   return (
     <div className="flex h-full border-r-2 border-slate-100 pt-16">
@@ -63,7 +52,6 @@ const SideBar = () => {
             {menuItems.map((item, index) => (
               <Link
                 key={index}
-                onClick={handleLinkClick}
                 to={item.path}
                 className="w-full px-4 py-2 flex gap-3 rounded-lg text-violet-900 group font-medium tracking-wide"
               >
@@ -91,7 +79,7 @@ const SideBar = () => {
 
           <div className="w-full">
             <Link
-              onClick={handleLogout}
+              onClick={handlesellerLogout}
               to="/Login"
               className="w-full px-4 py-2 flex items-center gap-3 text-violet-900 group font-medium tracking-wide rounded-xl bg-violet-100"
             >
@@ -109,4 +97,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default Sidebar;

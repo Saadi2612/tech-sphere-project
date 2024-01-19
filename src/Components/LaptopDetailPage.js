@@ -274,14 +274,14 @@ function LaptopDetailPage() {
         <button onClick={handlePreviousImage}> previous</button> */}
         {is360Visible && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100]">
-            <div className="w-screen h-screen flex items-center justify-center p-8">
+            <div className="w-screen h-screen flex items-center justify-center p-8 relative">
+              <span
+                onClick={() => setIs360Visible(false)}
+                className="absolute top-2 right-2 rounded-full p-1 cursor-pointer"
+              >
+                <AiOutlineCloseCircle color="white" size={28} />
+              </span>
               <div className="flex flex-col justify-center items-center bg-slate-300 rounded-xl shadow-lg shadow-black/20 p-4 max-w-2xl h-full relative">
-                <span
-                  onClick={() => setIs360Visible(false)}
-                  className="absolute -top-3 -right-3 bg-white rounded-full p-1 cursor-pointer"
-                >
-                  <AiOutlineCloseCircle size={22} />
-                </span>
                 <ThreeSixtyView
                   images={videoFrames}
                   height={frameDimensions.y}

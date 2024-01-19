@@ -1,4 +1,5 @@
 import React, { useState, Fragment, useRef, useEffect } from "react";
+
 import { Listbox, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { BiSearch } from "react-icons/bi";
@@ -7,15 +8,18 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import axios from "axios";
 import { Orbitals } from "react-spinners-css";
 
+import { useSellerAuth } from "../Components/ContextAuth/Sellerauthcontext";
+
 import {
   Accordion,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  filter,
 } from "@chakra-ui/react";
 
-import SideBar from "./SideBar";
+import Sidebar from "./Sidebar";
 
 import logo from "../Assets/TechSphere.svg";
 import preview from "../Assets/headphones-category.jpg";
@@ -24,7 +28,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { IoWarningOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 
-const AdminOrders = () => {
+const sorts = [
+  { sort: "Sort", value: "Sort" },
+  { sort: "A to Z", value: "A-Z" },
+  { sort: "Z to A", value: "Z-A" },
+];
+
+const SellerOrders = () => {
+  const [sellerauth] = useSellerAuth();
+  const SellerAuth = sellerauth?.seller?._id;
   const [allOrders, setAllOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [StatusPrompt, setStatusPrompt] = useState(false);
@@ -32,6 +44,11 @@ const AdminOrders = () => {
   const [selectedId, setSelectedId] = useState("");
   const [viewPrompt, setViewPrompt] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const [selectedSort, setSelectedSort] = useState(sorts[0].value);
+  const [searchedOrders, setSearchedOrders] = useState(allOrders);
+
+  const [itemIndex, setItemIndex] = useState(null);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -43,14 +60,71 @@ const AdminOrders = () => {
       .includes(searchTerm.toLowerCase());
   });
 
+  const sorting = (data) => {
+    switch (selectedSort) {
+      case "A-Z":
+        // console.log(data.slice().sort((a, b) => a.name.localeCompare(b.name)));
+        return data.slice().sort((a, b) => a.name.localeCompare(b.name));
+      case "Z-A":
+        return data.slice().sort((a, b) => b.name.localeCompare(a.name));
+      default:
+        return data;
+    }
+  };
+
+  // Filter posts on typing in search input
+  // Update the search term state
+  const handleSearchChange = () => {
+    // const searchTerm = event.target.value;
+    // setSearchTerm(searchTerm);
+
+    // If search term is empty, set filtered products to original array
+    if (!searchTerm.trim()) {
+      setSearchedOrders(allOrders);
+    } else {
+      // Filter products based on the search term
+      const filtered = allOrders.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSearchedOrders(filtered);
+    }
+  };
+
+  useEffect(() => {
+    handleSearchChange();
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const sorted = sorting(searchedOrders);
+
+    setSearchedOrders(sorted);
+  }, [selectedSort]);
+
+  // filteredProducts = sorting(allProducts);
+
+  const handleSortChange = (e) => {
+    setSelectedSort(e.value);
+  };
+
   const fetchOrders = async () => {
     setIsLoading(true);
 
     try {
       const orders = await axios.get("http://localhost:5000/orders");
 
-      setAllOrders(orders.data);
-      console.log(orders.data);
+      // Filter items based on SellerAuth
+      const filteredItems = orders.data.filter((order) => {
+        return order.items.some((item) => item.SellerAuth === SellerAuth);
+      });
+      console.log(filteredItems);
+      // Get the index of the first matching item
+      //   const indexOfFirstMatch = orders.data.items.findIndex(
+      //     (item) => item.SellerAuth === SellerAuth
+      //   );
+
+      setAllOrders(filteredItems);
+      setSearchedOrders(filteredItems);
+      // setItemIndex(indexOfFirstMatch);
       setIsLoading(false);
     } catch (error) {
       console.error(error);
@@ -93,8 +167,18 @@ const AdminOrders = () => {
           <img src={logo} alt="logo" className="h-9" />
         </div>
 
-        <div>
-          <h2>search bar</h2>
+        <div className="w-[40%] flex justify-center items-center rounded-lg bg-violet-100 p-0.5 gap-2">
+          <input
+            value={searchTerm}
+            onChange={handleSearch}
+            type="text"
+            placeholder="Search users..."
+            className="outline-none border-0 px-4 py-1 w-[100%] font-normal text-base text-gray-600 rounded-lg"
+          />
+
+          <div className="flex items-center justify-center text-gray-600 text-xl rounded-md p-2 cursor-pointer">
+            <BiSearch />
+          </div>
         </div>
         <div>
           <h2>icons and account</h2>
@@ -103,24 +187,62 @@ const AdminOrders = () => {
 
       <div className="w-full grid grid-cols-5 h-screen">
         <div className="col-span-1">
-          <SideBar />
+          <Sidebar />
         </div>
 
-        <div className="flex flex-col col-span-4 px-4 py-16 bg-[#f4effc] overflow-y-auto relative">
-          <div className="w-full p-2 flex items-center justify-center bg-violet-200 rounded-lg">
-            {/* Search Bar and filter */}
-            <div className="w-[40%] flex justify-center items-center rounded-lg bg-white p-0.5 gap-2">
-              <input
-                value={searchTerm}
-                onChange={handleSearch}
-                type="text"
-                placeholder="Search users..."
-                className="outline-none border-0 px-4 py-1 w-[100%] font-normal text-base text-gray-600 rounded-lg"
-              />
-
-              <div className="flex items-center justify-center text-gray-600 text-xl rounded-md p-2 cursor-pointer">
-                <BiSearch />
-              </div>
+        <div className="flex flex-col col-span-4 px-4 py-16 overflow-y-auto relative">
+          <div className="w-full p-2 flex items-center justify-center rounded-lg">
+            {/* filter */}
+            <div className="w-full h-full flex justify-end items-center">
+              <Listbox value={selectedSort} onChange={handleSortChange}>
+                <div className="relative h-full w-40">
+                  <Listbox.Button className="relative w-full h-full cursor-default rounded-lg bg-violet-100 py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">
+                    <span className="block truncate">{selectedSort}</span>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                      <ChevronDownIcon
+                        className="h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </Listbox.Button>
+                  <Transition
+                    as={Fragment}
+                    leave="transition ease-in duration-150"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg shadow-violet-200 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                      {sorts.map((sort, index) => (
+                        <Listbox.Option
+                          key={index}
+                          className={({ active }) =>
+                            `relative cursor-default select-none py-2 px-2 ${
+                              active
+                                ? "bg-sky-200/60 text-sky-700"
+                                : "text-gray-700"
+                            }`
+                          }
+                          value={sort}
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span
+                                className={`block truncate ${
+                                  selected
+                                    ? "font-semibold text-sky-700"
+                                    : "font-normal"
+                                }`}
+                              >
+                                {sort.sort}
+                              </span>
+                            </>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </Listbox>
             </div>
           </div>
           {isLoading ? (
@@ -128,8 +250,8 @@ const AdminOrders = () => {
               <Orbitals />
             </div>
           ) : (
-            <div class="w-full py-8">
-              {filtereds.length === 0 ? (
+            <div className="w-full py-8">
+              {searchedOrders.length === 0 ? (
                 <div className="w-full grid place-items-center py-10">
                   <h3 className="font-semibold text-gray-800 text-lg">
                     No Orders found!
@@ -138,7 +260,7 @@ const AdminOrders = () => {
               ) : (
                 <>
                   <div className="">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                       <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                           <th scope="col" className="px-6 py-3">
@@ -159,7 +281,7 @@ const AdminOrders = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {filtereds.map((order, index) => (
+                        {searchedOrders.map((order, index) => (
                           <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                             <td className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                               {order._id}
@@ -191,21 +313,7 @@ const AdminOrders = () => {
                             </td>
                             <td className="px-6 py-4">
                               {/* <!-- Modal toggle --> */}
-                              <button
-                                disabled={
-                                  order.ParcelStatus === "Delivered"
-                                    ? true
-                                    : false
-                                }
-                                onClick={() => handleStatusPrompt(order._id)}
-                                className={`font-medium px-5 py-2 mx-2 rounded-md ${
-                                  order.ParcelStatus === "Delivered"
-                                    ? "bg-blue-200/10 text-blue-300"
-                                    : "bg-blue-200/50 text-blue-600 hover:bg-blue-200 dark:text-blue-500"
-                                }`}
-                              >
-                                Edit status
-                              </button>
+
                               <button
                                 onClick={() => handleViewPrompt(order)}
                                 className="px-5 py-2 font-medium tracking-wide rounded-md bg-green-200/50 text-green-600 hover:bg-green-200"
@@ -292,36 +400,41 @@ const AdminOrders = () => {
                                   Products
                                 </p>
                                 <Accordion allowMultiple>
-                                  {selectedOrder.items.map((product, index) => (
-                                    <AccordionItem>
-                                      <h2>
-                                        <AccordionButton>
-                                          <span className="flex-1 text-left">
-                                            {product.name}
-                                          </span>
-                                          <AccordionIcon />
-                                        </AccordionButton>
-                                      </h2>
-                                      <AccordionPanel pb={4}>
-                                        <div className="">
-                                          <p className="font-bold font-sans tracking-tighter text-gray-600">
-                                            Product price
-                                          </p>
-                                          <p className="text-gray-800">
-                                            {product.price}
-                                          </p>
-                                        </div>
-                                        <div className="my-1">
-                                          <p className="font-bold font-sans tracking-tighter text-gray-600">
-                                            Seller name
-                                          </p>
-                                          <p className="text-gray-800">
-                                            {product.SellerName}
-                                          </p>
-                                        </div>
-                                      </AccordionPanel>
-                                    </AccordionItem>
-                                  ))}
+                                  {selectedOrder.items.map((product, index) =>
+                                    product.SellerAuth === SellerAuth ? (
+                                      <AccordionItem
+                                        className="bg-slate-100 px-2 rounded-md"
+                                        key={index}
+                                      >
+                                        <h2>
+                                          <AccordionButton>
+                                            <span className="flex-1 text-left">
+                                              {product.name}
+                                            </span>
+                                            <AccordionIcon />
+                                          </AccordionButton>
+                                        </h2>
+                                        <AccordionPanel pb={4}>
+                                          <div className="">
+                                            <p className="font-bold font-sans tracking-tighter text-gray-600">
+                                              Product price
+                                            </p>
+                                            <p className="text-gray-800">
+                                              {product.price}
+                                            </p>
+                                          </div>
+                                          <div className="my-1">
+                                            <p className="font-bold font-sans tracking-tighter text-gray-600">
+                                              Seller name
+                                            </p>
+                                            <p className="text-gray-800">
+                                              {product.SellerName}
+                                            </p>
+                                          </div>
+                                        </AccordionPanel>
+                                      </AccordionItem>
+                                    ) : null
+                                  )}
                                 </Accordion>
                               </div>
                             </div>
@@ -397,4 +510,4 @@ const AdminOrders = () => {
   );
 };
 
-export default AdminOrders;
+export default SellerOrders;

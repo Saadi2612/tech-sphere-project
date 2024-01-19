@@ -30,6 +30,7 @@ import AdminProducts from "./admin/AdminProducts";
 import Star from "./Components/Star";
 import SellerPrivateroute from "./Components/Routes/SellerPrivateroute";
 import SellerHome from "./Seller/SellerHome";
+import SellerOrders from "./Seller/SellerOrders";
 import { AuthSellerProvider } from "./Components/ContextAuth/Sellerauthcontext";
 import AdminUsers from "./admin/AdminUsers";
 import AdminSellers from "./admin/AdminSellers";
@@ -38,6 +39,9 @@ import About from "./Components/About/About";
 import SellerProducts from "./Seller/SellerProducts";
 import HeadphonesPage from "./Components/HeadphonesPage";
 import Chatbot from "./Components/Chatbot";
+
+import { ChakraProvider } from "@chakra-ui/react";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -137,6 +141,10 @@ const router = createBrowserRouter([
       {
         path: "/SellerHome/my-products",
         element: <SellerProducts />,
+      },
+      {
+        path: "/SellerHome/orders",
+        element: <SellerOrders />,
       },
     ],
   },

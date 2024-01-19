@@ -3,6 +3,7 @@ const {
   getLaptops,
   deleteProduct,
   updateProducts,
+  getAdminProducts,
 } = require("../Controllers/LaptopController");
 const express = require("express");
 const router = require("express").Router();
@@ -26,7 +27,7 @@ router.get("/orders", getorders);
 router.get("/reviews", getreviews);
 router.post("/Checkoutpage", orders);
 router.post("/reviewpage", reviews);
-router.get("/adminHome/products", getLaptops);
+router.get("/adminHome/products", getAdminProducts);
 router.delete("/adminHome/products/:id", deleteProduct);
 router.get("/adminHome/users", getUsers);
 router.delete("/adminHome/users/:id", deleteUsers);
